@@ -1,0 +1,28 @@
+{
+  "name": "buuum/encode",
+  "type": "library",
+  "description": "A simple library to encode and decode data in PHP.",
+  "homepage": "https://github.com/buuum/Encode",
+  "keywords": [
+    "encoding",
+    "encode"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Alfons Martinez",
+      "email": "alfonsmartinezparra@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Buuum\\Encoding\\": "src/Encode"
+    }
+  },
+  "require": {
+    "php": ">=5.5.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "*"
+  }
+}

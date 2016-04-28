@@ -2,9 +2,8 @@ Encode - A simple library to encode and decode data in PHP
 ==========================================================
 
 [![Build Status](https://travis-ci.org/buuum/Encode.svg?branch=master)](https://travis-ci.org/buuum/Encode)
-[![Packagist](https://img.shields.io/packagist/v/buuum/Encode.svg?maxAge=2592000)](https://packagist.org/packages/buuum/encode)
+[![Latest Stable Version](https://poser.pugx.org/buuum/encode/v/stable)](https://packagist.org/packages/buuum/encode)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](#license)
-
 # Install
 
 ### System Requirements
@@ -57,7 +56,7 @@ $code = \Buuum\Encoding\Encode::encode($data);
 ###  Decode Data
 
 ```
-var_dump(\Buuum\Encoding\Encode::decode($code));
+\Buuum\Encoding\Encode::decode($code);
 ```
 
 ###  Expires Token

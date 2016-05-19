@@ -73,6 +73,23 @@ $seconds = 10;
 $code = \Buuum\Encoding\Encode::encode($data, ['delay' => $seconds]);
 ```
 
+### Exceptions
+```php
+$seconds = 10;
+$code = \Buuum\Encoding\Encode::encode($data, ['delay' => $seconds]);
+
+try{
+    $data = Buuum\Encoding\Encode::decode($code);
+}catch(DelayException $e){
+    $e->getDate(); // date active
+}catch(ExpiresException $e){
+    echo $e->getDate(); // date expiration
+}catch (\Exception $e){
+    echo $e->getMessage());
+}
+```
+
+
 ## LICENSE
 
 The MIT License (MIT)

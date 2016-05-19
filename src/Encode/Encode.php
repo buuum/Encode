@@ -2,6 +2,9 @@
 
 namespace Buuum\Encoding;
 
+use Buuum\Encoding\Exception\DelayException;
+use Buuum\Encoding\Exception\ExpiresException;
+
 class Encode
 {
 
@@ -127,13 +130,15 @@ class Encode
         $info = self::jsonDecode($segments[0]);
 
         if ($info['expires'] > 0 && $info['expires'] < time()) {
-            throw new \Exception(
-                'This token expired on ' . date(\DateTime::ISO8601, $info['expires'])
+            throw new ExpiresException(
+                'This token expired on ' . date(\DateTime::ISO8601, $info['expires']),
+                $info['expires']
             );
         }
         if ($info['delay'] > 0 && $info['delay'] > time()) {
-            throw new \Exception(
-                'Cannot handle token prior to ' . date(\DateTime::ISO8601, $info['delay'])
+            throw new DelayException(
+                'Cannot handle token prior to ' . date(\DateTime::ISO8601, $info['delay']),
+                $info['delay']
             );
         }
 

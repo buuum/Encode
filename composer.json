@@ -3,7 +3,6 @@
   "type": "library",
   "description": "A simple library to encode and decode data in PHP.",
   "homepage": "https://github.com/buuum/Encode",
-  "version": "1.0.1",
   "keywords": [
     "encoding",
     "encode"

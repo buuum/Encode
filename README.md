@@ -51,6 +51,10 @@ $data = [
     'key2 => 'value 2'
 ];
 $code = \Buuum\Encoding\Encode::encode($data);
+
+// encode and return always the same result
+$code = \Buuum\Encoding\Encode::encode($data, [], false);
+
 ```
 
 ###  Decode Data

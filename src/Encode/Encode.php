@@ -31,18 +31,18 @@ class Encode
 
     /**
      * @param array $data
-     * @param array|null $head
+     * @param array $head
+     * @param boolean $never_the_same
      * @return string
      */
-    public static function encode(array $data, array $head = null)
+    public static function encode(array $data, array $head = [], $never_the_same = true)
     {
         $header = [
             'expires' => 0,
             'delay'   => 0
         ];
-        if (isset($head) && is_array($head)) {
-            $header = array_merge($header, $head);
-        }
+
+        $header = array_merge($header, $head);
 
         if ($header['expires'] > 0) {
             $header['expires'] += time();
@@ -55,25 +55,35 @@ class Encode
         $segments[] = self::jsonEncode($header);
         $segments[] = self::jsonEncode($data);
 
-        return self::sign(implode('.', $segments));
+        return self::sign(implode('.', $segments), $never_the_same);
     }
 
     /**
      * @param $data
+     * @param $never_the_same
      * @return string
      */
-    private static function sign($data)
+    private static function sign($data, $never_the_same)
     {
         list($cipher, $mode, $size) = self::$supported_algs[self::$alg];
 
-        $iv_size = mcrypt_get_iv_size($cipher, $mode);
-        $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+        if ($never_the_same) {
+            $iv_size = mcrypt_get_iv_size($cipher, $mode);
+            $iv = $ivp = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+            $prefix = "01";
+        } else {
+            $mode = MCRYPT_MODE_ECB;
+            $iv = '';
+            $ivp = self::getKey($size);
+            $prefix = "00";
+        }
 
-        return self::base64_url_encode($iv . mcrypt_encrypt(
+        return $prefix . self::base64_url_encode($iv . mcrypt_encrypt(
                 $cipher,
-                self::getKey($size), $data,
+                self::getKey($size),
+                $data,
                 $mode,
-                $iv
+                $ivp
             ));
     }
 
@@ -106,16 +116,26 @@ class Encode
     /**
      * @param $data
      * @return mixed
-     * @throws \Exception
+     * @throws DelayException
+     * @throws ExpiresException
      */
     static public function decode($data)
     {
+
         list($cipher, $mode, $size) = self::$supported_algs[self::$alg];
 
+        $prefix = substr($data, 0, 2);
+        $data = substr($data, 2);
         $data = self::base64_url_decode($data);
-        $iv_size = mcrypt_get_iv_size($cipher, $mode);
-        $iv_dec = substr($data, 0, $iv_size);
-        $data = substr($data, $iv_size);
+
+        if ($prefix == "01") {
+            $iv_size = mcrypt_get_iv_size($cipher, $mode);
+            $iv_dec = substr($data, 0, $iv_size);
+            $data = substr($data, $iv_size);
+        } else {
+            $mode = MCRYPT_MODE_ECB;
+            $iv_dec = self::getKey($size);
+        }
 
 
         $datainfo = trim(mcrypt_decrypt(

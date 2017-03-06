@@ -1,6 +1,8 @@
 <?php
 
-class EncodeTest extends PHPUnit_Framework_TestCase
+declare(strict_types=1);
+
+class EncodeTest extends \PHPUnit\Framework\TestCase
 {
 
 
